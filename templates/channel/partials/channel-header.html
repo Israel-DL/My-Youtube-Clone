@@ -1,0 +1,29 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js" integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<div class="channel-art">
+    <img src="{{ channel.channel_art.url }}" alt="">
+</div>
+<div class="channel-header flex">
+    <div class="channel-img-title flex">
+        <img class="img" src="{{ channel.image.url }}" alt="">
+        <div class="channel-image-texts">
+            <h4>{{ channel.channel_name}}</h4>
+            <span id="count"></span><span> subscribers</span>
+        </div>
+    </div>
+    <div class="channel-header-btns">
+        <div><a href="" class="channel-join">Join</a></div>
+        <div><button id="sub_btn" onclick="addsub()" href="" class="channel-subscribe sub_button_channel">Subscribe</button></div>
+    </div>
+</div>
+<div class="channel-header-links flex">
+    <a href="{% url 'channel-profile' channel.id %}" class="display-this">Home</a>
+    <a href="{% url 'channel-videos' channel.id %}" class="display-this">Videos</a>
+    <a href="{% url 'channel-about' channel.id %}" class="display-this">About</a>
+    <a href="{% url 'channel-community' channel.id %}" class="dont-display-thdis">Community</a>
+    {% comment %} <a href="{% url 'channel-profile' channel.id %}" class="dont-display-this">Membership</a>
+    <a href="{% url 'channel-profile' channel.id %}" class="dont-display-this">Channels</a> {% endcomment %}
+    <a href="{% url 'channel-profile' channel.id %}" class="dont-display-this"><i class="material-icons">search</i></a>
+</div>
+
+
+<hr>

@@ -1,0 +1,432 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube</title>
+    <link rel="icon" type="images/png" href="images/youtube-icon.png">
+    <link rel="stylesheet" href="{% static 'css/style.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/single.css'%}" type="text/css">
+    <base href="{% static ''%}">
+
+    <!-- CDNS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css" integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js" integrity="sha512-PJa3oQSLWRB7wHZ7GQ/g+qyv6r4mbuhmiDb8BjSFZ8NZ2a42oTtAq5n0ucWAwcQDlikAtkub+tPVCw4np27WCg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        a{
+            text-decoration: none;
+        }
+        .unsubscribe-btn{
+            background-color: gray;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <!-- Header menu Start -->
+
+        <div class="header__left">
+            <i id="menu" class="material-icons">menu</i>
+            <img src="https://www.xda-developers.com/files/2017/08/After-12-Years-Google-Gives-YouTube-a-New-Logo-1900x700_c.png" alt="">
+        </div>
+        <!-- Header menu end -->
+
+        <!-- Header seach Start -->
+
+        <div class="header__search">
+            <form action="">
+                <input type="text" placeholder="Search">
+                <button><i class="material-icons">search</i></button>
+            </form>
+        </div>
+        <!-- Header search Start -->
+        
+        <!-- Header Icons Start -->
+        <div class="header__icons">
+            <i class="material-icons display-this">search</i>
+            <i class="material-icons ">videocam</i>
+            <i class="material-icons">apps</i>
+            <i class="material-icons display-this">notifications</i>
+            <i id="drop-down" class="material-icons display-this">account_circle</i>
+        </div>
+        <!-- Header Icons Ends -->
+
+    </div>
+
+    <main class="single_pages">
+        <section class="video_items flex">
+            <div class="left">
+                <div class="left_content">
+                    <video controls>
+                        <source src="{{ video.video.url}}" type="video/mp4" poster="images/1.jpg">
+                    </video>
+
+                    <div class="tag">
+                        <label for="" class="tags">
+                            {% for tag in video.tags.all %}
+                               #{{tag.name}}
+                            {% endfor %}
+                        </label>
+                        <p>{{video.title}}</p>
+                    </div>
+
+                    <div class="view flex2 border_bottom">
+                        <div class="view-text">
+                            <span>{{video.views}} Views</span>
+                        </div>
+
+                        <div class="flex">
+                            <div class="icon">
+                                <button id="like-button" onclick="addlike()"><i class="fa fa-thumbs-up"></i></button>
+                                <label for=""><span id="like-count"></span></label>
+                            </div>
+
+                            <div class="icon">
+                                <a href=""><i class="fa fa-thumbs-down"></i></a>
+                                <label for="">Dislike</label>
+                            </div>
+
+                            <div class="icon">
+                                <a href=""><i class="fa fa-share"></i></a>
+                                <label for="">Share</label>
+                            </div>
+
+                            <div class="icon">
+                                <a href=""><i class="fa fa-scissors"></i></a>
+                                <label for="">Clip</label>
+                            </div>
+
+                            <div class="icon">
+                                <a href=""><i class="fa fa-bookmark"></i></a>
+                                <label for="">Save</label>
+                            </div>
+
+                            <div class="icon">
+                                <a href=""><i class="fa fa-thumbs-up"></i></a>
+                                <label for="">5k</label>
+                            </div>
+
+                            <div class="icon">
+                                <a href=""><i class="fa fa-ellipsis"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details flex border_bottom">
+                        <div class="img">
+                            <img src="{{ video.user.channel.image.url }}" alt="">
+                        </div>
+                        <div class="heading">
+                            <h4>{{video.user.channel.channel_name}} {% if video.user.channel.verified == True %} <small><i class="fa fa-check-circle"></i></small> {% endif %} </h4>
+                            <span id="count"></span><span>Subscribers</span>
+
+                            <h5>{{video.description}}</h5>
+                            <span> <i class="fa fa-caret-down"></i> show more</span>
+                        </div>
+                        <div>
+                            <button id="sub_btn" onclick="addsub()" class="subscribe-btn">Subscribe</button>
+                        </div>
+                    </div>
+
+                    <hr class="mid-hr">
+
+                    <div class="comment">
+                        <div class="comment-heading flex">
+                            <h4><b>{{comment.count}} Comments</b></h4>
+                            <h4><i class="fa fa-list-ul"></i> <label>Sort By</label> </h4>
+                        </div>
+                    </div>
+
+                    <div class="details comment_self flex">
+                        <div class="img">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAPFBMVEX///+ZmZmWlpaTk5OQkJD8/Pzl5eXU1NTz8/OhoaGzs7PExMSwsLCnp6ednZ35+fm9vb3s7OzMzMzd3d3XKhIGAAAFeElEQVR4nO1ca5ejKhCMPAR8IJr//1+vkslOomAXSDKec60vs7uzcsqmqW6axtvtwoULFy5cuHDh/wKpda3apuuNR981raq1ln/HSN/bxnAhOGOs8pj/sPzdNO1d/wGhoW4N+0dmjeU3pq2Hr1Kq217wMJ9fcNG347cYaWV4zERrg3GjvjGPurUCIfSEsO2naY1OQDZ6s5dwn5xFOVWkJ4XAq+lTIiEVy6LkaTH1EVq6y6bkaXXlXUtO6c70DiZKz+HQHDLTj7Gaompa5zn4hlVVl+OkMK2kwZgqxcklqeU+hCvEqcjUPcFLsBqOKUGAVXfY3YssuxWrw4uwtJ08q+4YJ9ifGIunfFtWh/wK5MQEm7PzOVNnoOwfYaUQLZgTX1frQc4YdO0MZC+RrVc1NHz3Hv+l6qBXydT2oaJJMbtNSaSywINV1hKUgBjwPphTjj3waJOTM0zAwC4ysARWCJ/SOWnaM1gTf7yhZ1AkZ32yI0dl/c4EyJ5+vkudQEXbn+3uUUbaVDxRF+TxIZHXSjNVS49oqTEs/V5tCqeRHA/QZCQepOxSgRVtybWjAVMlxEBEDoDhXFFZaIEwAawcBQwDexVg94oD3qCBxIf2gucbAh6KrGZAV/AcxtBj0YKwALA4NtCcRiHppin1dhxLrAA3L0gKc/WBDqVVweljPZLt1dAmvZSjz66OzB8Q9ipMEkZsJGT+DFaNLiOey0iAe2ps51YozPihaP28o9tcOiCDA7E7SQoShBmCzPsnsKxFi4IEMv4HLLGUB0QQPClys6URwYNeEDX5LMSUJyCR/Qf7AQIKVj8DUaQw6fRge2mHBrbuT5DyCRVanqziGz9g2/dCitI8TM//sYrYSqdwojUdXnwPViZo+Tph7qr97b8HvVtfvaXbGEs7njYIo2qgfRqnmZVp3wRraE1y7bYnSMEy9UJLGFWPehj0WCtDH3hvQYXkDFKz/Tmz/QzLEycOJIXGhgCz7CfJNDaLFHvBJ0ilTp+fua5xrp3hXNP1liXPYUmfYkxUzvv47/Pe210lkkxGkcIlgdtGRbOXQTUWX4aUJIDiyXg1EbFdTxU4j6R4YmGG91AJQAH19AoIM0hAZmwCjwuGCfEtMiADqUtS2wPSYkGmLnSSx9N6HiR9ckEmeWQ6nH6IT+5JyXSY2jgIepO2wZ2wPrlxILZYqYcED+zX+ekt1v7OaF4nGQdicn9NAxWqvW07o6Q3ir2cHdi27xU4bHb/TL2TfQAFjp1SUNpRyjviE4iUgvbm/0BTlowOCr1qVD5zzld/EdVQqLwYLcTaQ42RMQHECrExUSBjOYGIAIKnM5F6SY6WvyKi62BxP7J54Ad7D2X4XcFjkHD6QqaHJIJJLRy3gkdrx9beguD6g4/Wgq4OBAMCoQCGH0KGj2sPd0qPgQlI6eIIHGyTSQ+JgFIlNXcFWgCyE4RfBPaUSebfBMDjiy+w/BIj/EZUjur5go2mp0rfOoNFDogorA+QknPrdavSB0iltyqtZeEDpNKbutYCXN6nskLEqlGQbWvTaRjfDZXXKLhuqWTWZV+ukkO9qldltlRum0+ZsM10HxNH83ftNv27uc2noRxmqWda07lJ3Uet9eAhPWZ7eDz+Teuxvs9semOrQBE0v0032tzlb/EJwWd+pu+7rlngnP/RdX1vZiaP/xEpT324zZoFQTx09ErBGZvkz3md4JQXL26nvKJyO+dlnnNeezrnBbFzXqU756XD2ymvZ96WWx48/yIr/8xF1oVWm3vlt/3kdwFOeDl6wQmvkXtayqJH19+6cO/hP01AEGPLpwmKiiWJE37E4YGXz138klnS4L/63MUPXj4MYu0pPgxy4cKFCxcuXLjwZfwHwY4/t6m/mEAAAAAASUVORK5CYII=" alt="">
+                            
+                        </div>
+                        {% if request.user.is_authenticated %}
+                        <form action="" style="width: 100%;" id="comment_form">
+                        {% csrf_token %}
+                        <div class="heading flex" >
+                            <input type="hidden" value="{{ video.id }}" id="id" name="id">
+                            <input type="text" placeholder="Add a comment..." id="comment" name="comment">
+                            <button><i class="material-icons">send</i></button>
+                        </div>
+                        </form>
+                        {% else %}
+                        <a href="./../admin/login" style="margin-top: 10px;"> *Login To Make a Comment</a>
+                        {% endif %}
+
+                    </div>
+
+
+
+                    <div id="comment-wrapper">
+                    {% for c in comment %}
+                    <div class="comment-tray">
+                    <div class="details_Comment">
+                        <div class="details flex">
+                            <div class="img">
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAPFBMVEX///+ZmZmWlpaTk5OQkJD8/Pzl5eXU1NTz8/OhoaGzs7PExMSwsLCnp6ednZ35+fm9vb3s7OzMzMzd3d3XKhIGAAAFeElEQVR4nO1ca5ejKhCMPAR8IJr//1+vkslOomAXSDKec60vs7uzcsqmqW6axtvtwoULFy5cuHDh/wKpda3apuuNR981raq1ln/HSN/bxnAhOGOs8pj/sPzdNO1d/wGhoW4N+0dmjeU3pq2Hr1Kq217wMJ9fcNG347cYaWV4zERrg3GjvjGPurUCIfSEsO2naY1OQDZ6s5dwn5xFOVWkJ4XAq+lTIiEVy6LkaTH1EVq6y6bkaXXlXUtO6c70DiZKz+HQHDLTj7Gaompa5zn4hlVVl+OkMK2kwZgqxcklqeU+hCvEqcjUPcFLsBqOKUGAVXfY3YssuxWrw4uwtJ08q+4YJ9ifGIunfFtWh/wK5MQEm7PzOVNnoOwfYaUQLZgTX1frQc4YdO0MZC+RrVc1NHz3Hv+l6qBXydT2oaJJMbtNSaSywINV1hKUgBjwPphTjj3waJOTM0zAwC4ysARWCJ/SOWnaM1gTf7yhZ1AkZ32yI0dl/c4EyJ5+vkudQEXbn+3uUUbaVDxRF+TxIZHXSjNVS49oqTEs/V5tCqeRHA/QZCQepOxSgRVtybWjAVMlxEBEDoDhXFFZaIEwAawcBQwDexVg94oD3qCBxIf2gucbAh6KrGZAV/AcxtBj0YKwALA4NtCcRiHppin1dhxLrAA3L0gKc/WBDqVVweljPZLt1dAmvZSjz66OzB8Q9ipMEkZsJGT+DFaNLiOey0iAe2ps51YozPihaP28o9tcOiCDA7E7SQoShBmCzPsnsKxFi4IEMv4HLLGUB0QQPClys6URwYNeEDX5LMSUJyCR/Qf7AQIKVj8DUaQw6fRge2mHBrbuT5DyCRVanqziGz9g2/dCitI8TM//sYrYSqdwojUdXnwPViZo+Tph7qr97b8HvVtfvaXbGEs7njYIo2qgfRqnmZVp3wRraE1y7bYnSMEy9UJLGFWPehj0WCtDH3hvQYXkDFKz/Tmz/QzLEycOJIXGhgCz7CfJNDaLFHvBJ0ilTp+fua5xrp3hXNP1liXPYUmfYkxUzvv47/Pe210lkkxGkcIlgdtGRbOXQTUWX4aUJIDiyXg1EbFdTxU4j6R4YmGG91AJQAH19AoIM0hAZmwCjwuGCfEtMiADqUtS2wPSYkGmLnSSx9N6HiR9ckEmeWQ6nH6IT+5JyXSY2jgIepO2wZ2wPrlxILZYqYcED+zX+ekt1v7OaF4nGQdicn9NAxWqvW07o6Q3ir2cHdi27xU4bHb/TL2TfQAFjp1SUNpRyjviE4iUgvbm/0BTlowOCr1qVD5zzld/EdVQqLwYLcTaQ42RMQHECrExUSBjOYGIAIKnM5F6SY6WvyKi62BxP7J54Ad7D2X4XcFjkHD6QqaHJIJJLRy3gkdrx9beguD6g4/Wgq4OBAMCoQCGH0KGj2sPd0qPgQlI6eIIHGyTSQ+JgFIlNXcFWgCyE4RfBPaUSebfBMDjiy+w/BIj/EZUjur5go2mp0rfOoNFDogorA+QknPrdavSB0iltyqtZeEDpNKbutYCXN6nskLEqlGQbWvTaRjfDZXXKLhuqWTWZV+ukkO9qldltlRum0+ZsM10HxNH83ftNv27uc2noRxmqWda07lJ3Uet9eAhPWZ7eDz+Teuxvs9semOrQBE0v0032tzlb/EJwWd+pu+7rlngnP/RdX1vZiaP/xEpT324zZoFQTx09ErBGZvkz3md4JQXL26nvKJyO+dlnnNeezrnBbFzXqU756XD2ymvZ96WWx48/yIr/8xF1oVWm3vlt/3kdwFOeDl6wQmvkXtayqJH19+6cO/hP01AEGPLpwmKiiWJE37E4YGXz138klnS4L/63MUPXj4MYu0pPgxy4cKFCxcuXLjwZfwHwY4/t6m/mEAAAAAASUVORK5CYII=" alt="">
+                                
+                            </div>
+                            <div class="heading">
+                                <h4><b>{{c.user.username|title}}</b> &nbsp; ●<span>{{c.date|timesince}} ago</span></h4>
+                                <p>{{c.comment}}</p>
+                                <div class="comment-like flex">
+                                    <div class="icon">
+                                        <i class="fa fa-thumbs-up"></i>
+                                        <label for=""><small>5</small></label>
+                                    </div>
+
+                                    <div class="icon">
+                                        <i class="fa fa-thumbs-down"></i>
+                                        <label for=""><small>Dislike</small></label>
+                                    </div>
+
+                                    <div class="icon">
+                                        <label for=""><a href=""><small>Reply</small></a></label>
+                                    </div>
+                                    <div class="icon">
+                                        <label for=""><button data-cid={{c.id}} class="btn-del" style="color: red;"><small>Delete</small></button></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="replay">
+                        <label for="" class="tags"><i class="fa fa-caret-up"></i>Hide Reply</label>
+                        <div class="replay-details flex">
+                            <div class="img">
+                            <img src="data:image/png;base64,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" alt="">
+                                
+                            </div>
+                            <div class="text">
+                                <h4><label for="">Desphixs</label> <span>16 Months ago</span> </h4>
+                                <p>Thank you</p>
+                            </div>
+                        </div>
+                    </div> 
+                    <br>
+                    <hr>
+                    </div>
+                    {% endfor%}
+                    </div>
+                </div>
+            </div>
+
+            <div class="right">
+                <div class="right_content">
+                    {% comment %} <button class="chat">Show Chat Reply</button> {% endcomment %}
+                    {% comment %} {% for tag in video.tags.all %}
+                    <div class="tags">
+                        <label for="" class="tags-bg">{{tag.name}}</label>
+                    </div>
+                    {% endfor %} {% endcomment %}
+                    {% for s in similar_videos %}
+                    <div class="video_items vide_sidebar flex">
+                        <a href="">
+                            {% if s.image %}
+                            <img src="{{s.image.url}}"  alt="" >
+                            {% else %}
+                            <img src="http://127.0.0.1:8000/watch/1/" href="{% url 'video-detail' s.id %}" alt="">
+    
+                            {% endif %}
+                        </a>
+                        <div class="details">
+                            <a href="{% url 'video-detail' s.id %}"><p><b>{{s.title|truncatechars:40}}</b></p></a>
+                            <span>{{s.user.channel.channel_name}} {% if s.user.channel.verified == True %}<i class="fa fa-check-circle"></i> {% endif %}</span>
+                            <span><small>{{s.views}} Views . {{s.date|timesince}} Ago</small> </span>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    
+
+                    
+                </div>
+            </div>
+
+        </section>
+    </main>
+    
+
+<script src="js/main.js"></script>
+</body>
+</html>
+
+<script type="text/javascript">
+    $(document).on("submit", "#comment_form", function(e){
+        e.preventDefault()
+        //console.log("Comment Form Is Submitted")
+        let _comment = $("#comment").val()
+        console.log(_comment);
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'save_comment' %}",
+            data: {
+                id: $("#id").val(),
+                comment: _comment,
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success: function(){
+                console.log("Comment Saved To DB");
+                
+
+
+                let _html = '<div class="details_Comment">\
+                    <div class="details flex">\
+                        <div class="img">\
+                        <img src="data:image/png;base64,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" alt="">\
+                        </div>\
+                        <div class="heading">\
+                            <h4><b>{{request.user.username|title}}</b> &nbsp; ●<span>{% now "H:i" %} </span></h4>\
+                            <p>'+ _comment +'</p>\
+                            <div class="comment-like flex">\
+                                <div class="icon">\
+                                    <i class="fa fa-thumbs-up"></i>\
+                                    <label for=""><small>5</small></label>\
+                                </div>\
+                                <div class="icon">\
+                                    <i class="fa fa-thumbs-down"></i>\
+                                    <label for=""><small>Dislike</small></label>\
+                                </div>\
+                                <div class="icon">\
+                                    <label for=""><a href=""><small>Reply</small></a></label>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+                 <div class="replay">\
+                    <label for="" class="tags"><i class="fa fa-caret-up"></i>Hide Reply</label>\
+                    <div class="replay-details flex">\
+                        <div class="img">\
+                        <img src="data:image/png;base64,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" alt="">\
+                        </div>\
+                        <div class="text">\
+                            <h4><label for="">Desphixs</label> <span>16 Months ago</span> </h4>\
+                            <p>Thank you</p>\
+                        </div>\
+                    </div>\
+                </div> \
+                <br>\
+                <hr>\
+                '
+
+                $("#comment-wrapper").prepend(_html)
+                $("#comment").val("")
+            },
+            error: function(error){
+                console.log(error);
+            }
+        })
+    })
+
+    // Deleting Comments
+    $("#comment-wrapper").on("click",".btn-del", function(){
+        //console.log("Delete Comment Buttton Is Clicked");
+        let id = $(this).attr("data-cid")
+
+        mydata = {
+            cid:id
+        }
+        mythis = $(this)
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'delete_comment' %}",
+            data: mydata,
+
+            success: function(data){
+                console.log(data);
+                if(data.status == 1){
+                    //console.log("Comment Deleted");
+                    $(mythis).closest(".comment-tray").fadeOut();
+                }
+                if(data.status == 0){
+                    //console.log("Unable To Delete Comment");
+                    alert("Unable To Delete Comment Try Again Later....");
+                } 
+            } 
+        })
+    })
+</script>
+
+
+<!--Subscribe Feature-->
+<script>
+    let subcounter = document.getElementById('count')
+    sub_button = document.getElementById('sub_btn')
+    subscriber_added = []
+    
+    function addsub(){
+        // sub_button.classList.add('loading')
+        axios
+        .get('{% url 'add_sub' video.user.id %}')
+        .then(response =>{
+                this.response = response.data;
+                sub_button.innerHTML =  this.response;
+                loadsub()
+                // sub_button.classList.remove('loading')
+                sub_button.classList.toggle("unsubscribe-btn")
+        })
+    }
+    
+    function loadsub(){
+        axios
+        .get('{% url "load_sub" channel.pk %}')
+        .then(response =>{
+                this.response = response.data;
+                subscriber_added = this.response;
+                subcounter.innerHTML = subscriber_added.length
+
+    
+        })
+    }
+    
+    window.onload = loadsub();
+</script>
+
+
+<!--Like Feature-->
+<script>
+    let likescounter = document.getElementById('like-count')
+    like_button = document.getElementById('like-button')
+    likes_added = []
+    
+    function addlike(){
+        // sub_button.classList.add('loading')
+        axios
+        .get('{% url 'add_like' video.id %}')
+        .then(like_response =>{
+                this.like_response = like_response.data;
+                like_button.innerHTML =  this.like_response;
+                loadlike()
+                // sub_button.classList.remove('loading')
+                //sub_button.classList.toggle("unsubscribe-btn")
+        })
+    }
+    
+    function loadlike(){
+        axios
+        .get('{% url "likeLoad" video.id %}')
+        .then(like_response =>{
+                this.like_response = like_response.data;
+                likes_added = this.like_response;
+                likescounter.innerHTML = likes_added.length
+
+    
+        })
+    }
+    
+    window.onload = loadlike();
+</script>

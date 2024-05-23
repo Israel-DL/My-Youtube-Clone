@@ -1,0 +1,261 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youtube</title>
+    <link rel="icon" type="images/png" href="images/youtube-icon.png">
+    <link rel="stylesheet" href="{% static 'css/style.css'%}" type="text/css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.0.0/css/all.css" integrity="sha384-3B6NwesSXE7YJlcLI9RpRqGf2p/EgVH8BgoKTaUrmKNDkHPStTQ3EyoYjCGXaOTS" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+
+    <style>
+        button{
+            border: none;
+            background: none;
+        }
+        .message-alert{
+            background-color: rgb(166, 255, 166);   
+            padding: 14px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border: 1px green solid;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div class="header">
+        <!-- Header menu Start -->
+
+        <div class="header__left">
+            <i id="menu" class="material-icons">menu</i>
+            
+            <a href="index.html">
+                <img src="https://www.xda-developers.com/files/2017/08/After-12-Years-Google-Gives-YouTube-a-New-Logo-1900x700_c.png" alt="">
+            </a>
+        </div>
+        <!-- Header menu end -->
+
+        <!-- Header seach Start -->
+
+        <div class="header__search">
+            <form action="">
+                <input type="text" placeholder="Search">
+                <button><i class="material-icons">search</i></button>
+            </form>
+        </div>
+        <!-- Header search Start -->
+        
+        <!-- Header Icons Start -->
+        <div class="header__icons">
+            <i class="material-icons display-this">search</i>
+            <i class="material-icons ">videocam</i>
+            <i class="material-icons">apps</i>
+            <i class="material-icons display-this">notifications</i>
+            <i id="drop-down" class="material-icons display-this">account_circle</i>
+        </div>
+        <!-- Header Icons Ends -->
+
+    </div>
+
+    <!-- Main Body Starts -->
+    <div class="mainBody">
+        <div class="sidebar">
+            <div class="sidebar__categories">
+                
+                <!-- Single Category -->
+                <a href="index.html">
+                    <div class="sidebar__category">
+                        <i class="material-icons">home</i>
+                        <span>Home</span>
+                    </div>
+                </a>
+
+                <!-- Single Category -->
+                <div class="sidebar__category">
+                    <i class="material-icons">local_fire_department</i>
+                    <span>Trending</span>
+                </div>
+
+                <!-- Single Category -->
+                <div class="sidebar__category">
+                    <i class="material-icons">subscriptions</i>
+                    <span>Subscriptions</span>
+                </div>
+            </div>
+            <hr>
+            <div class="sidebar__categories">
+
+                <!-- Single Category -->
+                <div class="sidebar__category">
+                    <i class="material-icons">library_add_check</i>
+                    <span>Library</span>
+                </div>
+
+                <!-- Single Category -->
+                <div class="sidebar__category">
+                    <i class="material-icons">history</i>
+                    <span>History</span>
+                </div>
+
+                <!-- Single Category -->
+                <a href="channel-videos.html">
+                    <div class="sidebar__category">
+                        <i class="material-icons">play_arrow</i>
+                        <span>Your Videos</span>
+                    </div>
+                </a>
+
+                <!-- Single Category -->
+                <div class="sidebar__category">
+                    <i class="material-icons">watch_later</i>
+                    <span>Watch Later</span>
+                </div>
+
+                <!-- Single Category -->
+                <div class="sidebar__category">
+                    <i class="material-icons">thumb_up</i>
+                    <span>Liked Videos</span>
+                </div>
+            </div>
+            <hr>
+        </div>
+        <!-- Sidebar Ends -->
+
+        <!-- Video Section Starts -->
+        <div class="videos">
+            
+            {% include "channel/partials/channel-header.html" %}
+            <div class="videos__container">
+                <!-- Single Video Starts Here -->
+
+                <div class="content-border">
+                    <div class="content-div">
+
+                        {% if messages %}
+                          {% for message in messages %}
+                              <div class="message-alert">
+                                <strong>{{ message }}</srong>
+                              </div>
+                          {% endfor %}
+                        {% endif %}
+
+                        
+                        <div class="header-comm">
+                            <div class="channel-details">
+                                <img src="{{ community.channel.image.url }}" class="channel-img-com" alt="">
+                                <h5>{{ community.channel.channel_name}}</h5>
+                                <span>{{ community.date|timesince }} ago</span>
+                            </div>
+                            <!-- <div class="elipse-icon">
+                                <i class="material-symbols-outlined">sort</i>
+                            </div> -->
+                            <div class="dropdown">
+                                <button class="dropbtn"> 
+                                  <i class="material-symbols-outlined">sort</i>
+                                </button>
+                                <div class="dropdown-content">
+                                  <a href="#"> <i class="material-symbols-outlined">edit</i> &nbsp; Edit</a>
+                                  <a href="#"> <i class="material-symbols-outlined">delete</i> &nbsp; Delete</a>
+                                  <a href="#"> <i class="material-symbols-outlined">share</i> &nbsp; Share</a>
+                                </div>
+                              </div>
+                            
+                        </div>
+                        <div class="content">
+                            <h3>{{ community.content }}</h3>
+                            <img src="{{ community.image.url }}" alt="">
+                        </div>
+                        <div class="icon-section">
+                            <div class="single-icon">
+                                <a href="{% url 'community-post-like' community.id %}"><i class="materiald-icons material-symbols-outlined">thumb_up</i></a>
+                                <span>{{ community.likes.all.count }}</span>
+                            </div>
+
+                            <div class="single-icon">
+                                <a href="{% url 'community-post-like' community.id %}"><i class="materiald-icons material-symbols-outlined">thumb_down</i></a>
+                                
+                            </div>
+
+                            <div class="single-icon">
+                                <i class="materiald-icons material-symbols-outlined">share</i>
+                            </div>
+
+                            <div class="single-icon">
+                                <i class="materiald-icons material-symbols-outlined">chat</i>
+                                <span>{{ community.comments.all.count }}</span>
+                            </div>
+                        </div>
+
+
+                        <hr><br><br>
+
+                        
+                        <div class="comment-section">
+                            <h4>{{ community.comments.all.count }} Comment{{ community.comments.all.count|pluralize }}</h4>
+                            <!-- Create Comment Section -->
+                            <div class="create-comment">
+                                <div class="create-comment-img">
+                                    <img src="data:image/png;base64,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" alt="">
+                                </div>
+                                <!--Comment Form-->
+                                <form action="{% url 'community-create-comment' community.id %}" method="POST">
+                                 {% csrf_token %}
+                                <div class="create-comment-input">
+                                    <input name="comment" id="comment" type="text" placeholder="Add a comment">
+                                    <button type="submit"><i class="material-icons">send</i></button>
+                                </div>
+                            </form>
+                            <!--End Comment Form-->
+                            </div>
+
+                            <!-- Comments Section -->
+                            {% for c in comments %}
+                            <div class="comment-wrap">
+                                <div class="comments">
+                                    <div class="comment-img">
+                                        <img src="data:image/png;base64,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" alt="">
+                                    </div>
+                                    <div class="comment-content">
+                                        <div class="comment-header">
+                                            <h4><b>{{ c.user.username|title }}</b></h4>
+                                            <p><small>{{ c.date|timesince }} ago</small></p>
+                                        </div>
+                                        <p>{{ c.comment }}</p>
+                                        <div class="comment-icons">
+                                            <div class="comment-icon-single">
+                                                <i class="material-icons">thumb_up</i>
+                                                <span>2</span>
+                                            </div>
+                                            <div class="comment-icon-single">
+                                                <i class="material-icons">thumb_up</i>
+                                            </div>
+                                            <div class="comment-icon-single">
+                                                <span>Reply</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="delete-comment">
+                                    <a href="{% url 'community-delete-comment' c.community.id c.id%}"><i class="material-icons">delete</i></a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% include "channel/partials/subscribe-axios.html" %}
+<script src="js/main.js"></script>
+</body>
+</html>
